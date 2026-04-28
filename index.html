@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字幕翻譯播放器</title>
+<title>MIIM x ALPHA DRIVE ONE 平衡遊戲 EP.1</title>
 
 <style>
 body {
@@ -14,8 +14,9 @@ body {
 
 /* 標題 */
 #title {
-  font-size: 24px;
+  font-size: 26px;
   margin: 20px;
+  font-weight: bold;
 }
 
 /* 右上角彈幕按鈕 */
@@ -37,7 +38,7 @@ body {
   margin: auto;
 }
 
-/* 字幕（覆蓋在影片上） */
+/* 字幕 */
 #subtitle {
   position: absolute;
   bottom: 20px;
@@ -82,7 +83,7 @@ body {
 
 <body>
 
-<div id="title">字幕翻譯播放器</div>
+<div id="title">MIIM x ALPHA DRIVE ONE 平衡遊戲 EP.1</div>
 <button id="danmuToggle">彈幕：開</button>
 
 <div id="video-container">
@@ -98,10 +99,10 @@ body {
 let player;
 let danmuOn = true;
 
-/* YouTube 連結 */
-const youtubeUrl = "https://youtu.be/ytUfCqnBFvg";
+/* ✅ 改成完整 YouTube 連結 */
+const youtubeUrl = "https://www.youtube.com/watch?v=ytUfCqnBFvg";
 
-/* 取得ID */
+/* 抓ID */
 function getVideoId(url) {
   const u = new URL(url);
   if (u.hostname.includes("youtube.com")) return u.searchParams.get("v");
@@ -119,20 +120,19 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/* 字幕資料 */
+/* 字幕 */
 const subtitles = [
   { time: 0, text: "LEO：向大家問好 / ONE DESTINY" },
   { time: 2, text: "DRIVE TO THE TOP" },
   { time: 4, text: "大家好，我們是ALPHA DRIVE ONE" }
 ];
 
-/* 彈幕資料 */
+/* 彈幕 */
 const danmus = [
   { time: 1, text: "好帥！！！" },
   { time: 3, text: "這句超燃🔥" }
 ];
 
-/* 更新字幕 */
 function updateSubtitle() {
   if (!player || !player.getCurrentTime) return;
 
@@ -148,7 +148,6 @@ function updateSubtitle() {
   document.getElementById("subtitle").innerText = text;
 }
 
-/* 彈幕生成 */
 function updateDanmu() {
   if (!danmuOn || !player) return;
 
@@ -168,7 +167,6 @@ function updateDanmu() {
   });
 }
 
-/* 定時更新 */
 setInterval(() => {
   updateSubtitle();
   updateDanmu();
