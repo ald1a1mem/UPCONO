@@ -15,13 +15,7 @@ body {
 #subtitle {
   margin-top: 20px;
   font-size: 26px;
-  color: white;
-
-  /* ⭐ 70% 黑底 */
-  background: rgba(0, 0, 0, 0.7);
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 8px;
+  color: #00ffcc;
 }
 </style>
 </head>
@@ -39,7 +33,7 @@ body {
 let player;
 
 /* ⭐ 只改這裡：貼 YouTube 連結 */
-const youtubeUrl = "https://youtu.be/4_egYOdslfs?si=CfHDRvS_UfdQfQPy";
+const youtubeUrl = "https://youtu.be/ytUfCqnBFvg?si=GDEU1KCwMVMK2VSZ";
 
 /* ⭐ 抓 videoId */
 function getVideoId(url) {
@@ -60,14 +54,14 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-/* ⭐ 字幕（完全不動） */
+/* ⭐ 超簡單字幕（直接寫這裡） */
 const subtitles = [
-  { time: 25, text: "[SBS 登村洞公共禮堂]" },
-  { time: 29, text: "SANGWON：勁爆" },
-  { time: 30, text: "JUNSEO：UP" }
+  { time: 0, text: "LEO：向大家問好/nONE DESTINY" },
+  { time: 1, text: "DRIVE TO THE TOP" },
+  { time: 2, text: "大家好，我們是ALPHA DRIVE ONE" }
 ];
 
-/* ⭐ 更新字幕（完全不動） */
+/* ⭐ 更新字幕 */
 function updateSubtitle() {
   if (!player || !player.getCurrentTime) return;
 
