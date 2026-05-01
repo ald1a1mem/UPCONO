@@ -45,18 +45,17 @@ body {
   border-radius: 6px;
 }
 
-/* ⭐ 影片包住（讓 overlay 在外面） */
+/* ⭐ 影片包 */
 #video-wrapper{
   position: relative;
   width: 640px;
   margin: auto;
 }
 
-/* 影片容器 */
+/* 影片 */
 #video-container {
   position: relative;
   width: 100%;
-  transition: all 0.3s ease;
 }
 
 #video-container.fullscreen {
@@ -92,42 +91,7 @@ body {
   max-width: 90%;
 }
 
-/* ❤️ + 📊（影片外左下角） */
-#video-overlay{
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-
-  display: flex;
-  gap: 12px;
-  align-items: center;
-
-  font-size: 14px;
-  z-index: 20;
-}
-
-/* ❤️ */
-#likeBtn{
-  background:none;
-  border:none;
-  font-size:18px;
-  cursor:pointer;
-  color: var(--main-color);
-}
-
-#likeCount{
-  color: var(--main-color);
-}
-
-/* 📊 */
-#view-section{
-  display:flex;
-  gap:4px;
-  align-items:center;
-  color: var(--main-color);
-}
-
-/* 按鈕 */
+/* 全螢幕 */
 #fullscreenBtn {
   display: block;
   margin: 12px auto;
@@ -151,41 +115,40 @@ body {
   display: none;
 }
 
-/* 留言 */
-#comment-section {
-  width: 300px;
-  background: #1b1b1b;
-  border-radius: 10px;
-  padding: 15px;
-  text-align: left;
-  margin: 20px auto;
+/* ❤️ + 📊（影片外左下） */
+#video-overlay{
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  font-size: 14px;
+  z-index: 20;
 }
 
-#comment-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 6px;
+#likeBtn{
+  background:none;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+  color: var(--main-color);
 }
 
-#comment-btn {
-  width: 100%;
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
+#likeCount{
+  color: var(--main-color);
 }
 
-.comment {
-  background: #2a2a2a;
-  padding: 10px;
-  border-radius: 6px;
-  margin-top: 10px;
+#view-section{
+  display:flex;
+  gap:4px;
+  align-items:center;
+  color: var(--main-color);
 }
+
+/* ❌ 已移除留言區 */
 
 </style>
 </head>
@@ -204,7 +167,6 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
   </div>
 </div>
 
-<!-- ⭐ wrapper -->
 <div id="video-wrapper">
 
   <div id="video-container">
@@ -217,7 +179,7 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
   </div>
 
-  <!-- ❤️ + 📊 外面左下 -->
+  <!-- ❤️ + 📊 -->
   <div id="video-overlay">
 
     <div>
@@ -234,12 +196,6 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 </div>
 
 <button id="fullscreenBtn">全螢幕</button>
-
-<div id="comment-section">
-  <input id="comment-input" placeholder="輸入留言...">
-  <button id="comment-btn">發送留言</button>
-  <div id="comments"></div>
-</div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -265,7 +221,7 @@ function createPlayer(){
 
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* 🔥 字幕（完全保留你原本的） */
+/* 字幕（完全不動） */
 const subtitles = [
 { time: 25, text: "[SBS 登村洞公共禮堂]" },
 { time: 29, text: "勁爆 UP" },
@@ -329,42 +285,21 @@ function updateSubtitle(){
 }
 setInterval(updateSubtitle,200);
 
-/* ❤️ 防刷（每人一次 + 冷卻） */
+/* ❤️（純點讚） */
 let likeCount = parseInt(localStorage.getItem("likeCount")||"0");
-let liked = localStorage.getItem("liked")==="true";
-let lastClick = parseInt(localStorage.getItem("likeTime")||"0");
 
 const likeBtn = document.getElementById("likeBtn");
 const likeCountEl = document.getElementById("likeCount");
 
 function updateLike(){
   likeCountEl.innerText = likeCount;
-  likeBtn.innerText = liked ? "❤️" : "🤍";
 }
+
 updateLike();
 
 likeBtn.onclick = () => {
-  const now = Date.now();
-
-  if(liked){
-    alert("你已經按過了");
-    return;
-  }
-
-  if(now - lastClick < 3000){
-    alert("請稍等一下再點");
-    return;
-  }
-
-  liked = true;
   likeCount++;
-
   localStorage.setItem("likeCount",likeCount);
-  localStorage.setItem("liked","true");
-  localStorage.setItem("likeTime",now);
-
-  lastClick = now;
-
   updateLike();
 };
 
