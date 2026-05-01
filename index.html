@@ -34,7 +34,7 @@ body {
   margin-bottom: 15px;
 }
 
-/* ❌ 按鈕不可用 */
+/* ❌ 全部鎖死 */
 #subtitle-controls button {
   background: #555;
   color: #999;
@@ -46,7 +46,7 @@ body {
   opacity: 0.4;
 }
 
-/* 影片外層 */
+/* 影片外框 */
 #video-wrapper{
   position: relative;
   width: 640px;
@@ -81,45 +81,29 @@ body {
   max-width: 90%;
 }
 
-/* 全螢幕 */
-#fullscreenBtn {
-  display: block;
-  margin: 12px auto;
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
+/* ❤️ + 📊（移到全螢幕左邊，同一排） */
+#bottom-bar{
+  width: 640px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-#exitFullscreenBtn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.7);
-  color: white;
-  border: 1px solid white;
-  padding: 6px 10px;
-  display: none;
-}
-
-/* ❤️ + 📊（影片外左下角 + 對齊影片左邊） */
+/* 左側：like + view */
 #video-overlay{
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-
   display: flex;
   gap: 12px;
   align-items: center;
-
   font-size: 14px;
 }
 
+/* ❤️ */
 #likeBtn{
   background:none;
   border:none;
   font-size:18px;
+  cursor:pointer;
   color: var(--main-color);
 }
 
@@ -127,6 +111,7 @@ body {
   color: var(--main-color);
 }
 
+/* 📊 */
 #view-section{
   display:flex;
   gap:4px;
@@ -134,7 +119,20 @@ body {
   color: var(--main-color);
 }
 
-/* ❌ 留言已刪除 */
+/* 右側全螢幕 */
+#fullscreenBtn {
+  background: var(--main-color);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 留白 */
+#spacer{
+  flex:1;
+}
 
 </style>
 </head>
@@ -156,32 +154,34 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 <div id="video-wrapper">
 
   <div id="video-container">
-
     <div id="player"></div>
 
     <div id="subtitle">字幕載入中...</div>
-
-    <button id="exitFullscreenBtn">退出全螢幕</button>
-
   </div>
 
-  <!-- ❤️ + 📊 在影片外左下角 -->
-  <div id="video-overlay">
+  <!-- ⭐ 底部控制列 -->
+  <div id="bottom-bar">
 
-    <div>
-      <button id="likeBtn">🤍</button>
-      <span id="likeCount">0</span>
+    <!-- 左 -->
+    <div id="video-overlay">
+      <div>
+        <button id="likeBtn">🤍</button>
+        <span id="likeCount">0</span>
+      </div>
+
+      <div id="view-section">
+        📊 <span id="viewCount">0</span>
+      </div>
     </div>
 
-    <div id="view-section">
-      📊 <span id="viewCount">0</span>
-    </div>
+    <div id="spacer"></div>
+
+    <!-- 右 -->
+    <button id="fullscreenBtn">全螢幕</button>
 
   </div>
 
 </div>
-
-<button id="fullscreenBtn">全螢幕</button>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -204,10 +204,9 @@ function createPlayer(){
     playerVars:{fs:0,controls:1}
   });
 }
-
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* ⭐ 字幕（100%完全保留） */
+/* ⭐ 字幕（完全保留） */
 const subtitles = [
 { time: 25, text: "[SBS 登村洞公共禮堂]" },
 { time: 29, text: "勁爆 UP" },
@@ -223,36 +222,7 @@ JUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量`
 { time: 41, text: "SANGWON | UP CONO" },
 { time: 42, text: "JUNSEO | UP CONO" },
 { time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
-{ time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
-{ time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
-{ time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
-{ time: 52, text: `[找到工作了]
-SANGWON | 入職！` },
-{ time: 53, text: `[找到工作了]
-JUNSEO | 入職！非常恭喜你` },
-{ time: 55, text: "JUNSEO | 這是我們出道以來第一次獲得節目的固定MC" },
-{ time: 57, text: `[恭喜出道以來首次擔任固定MC]
-JUNSEO | 這是我們出道以來第一次獲得節目的固定MC` },
-{ time: 59, text: "JUNSEO | 真是莫大的榮幸" },
-{ time: 62, text: `[喜歡]
-JUNSEO | 我們會非常努力的` },
-{ time: 63, text: `[馬上開始MC入職儀式]
-JUNSEO | 給我們UP節奏！` },
-{ time: 67, text: `[兼職生JUNSEO的UPbit舞蹈]
-aespa - UP (KARINA SOLO)` },
-{ time: 83, text: "[離兼職生JUNSEO更近了]" },
-{ time: 84, text: "[那些華麗的舞步 讓鏡頭緩緩拉近]" },
-{ time: 86, text: "[嚇了一跳]" },
-{ time: 92, text: "[感受 JUNSEO 的 UP]" },
-{ time: 98, text: "[競爭模式]" },
-{ time: 99, text: "[嘖~]" },
-{ time: 101, text: "不錯？" },
-{ time: 102, text: "JUNSEO | 是不是很棒？" },
-{ time: 103, text: "SANGWON：是啊" },
-{ time: 104, text: `[也給我們看看兼職生 SANGWON]
-JUNSEO | 給我們看看  等等，那是什麼？ ` },
-{ time: 107, text: `[沙沙聲]
-JUNSEO | 給我們看看  等等，那是什麼？ ` }
+{ time: 110, text: "那個道具真的大大提升了氛圍？" }
 ];
 
 function updateSubtitle(){
