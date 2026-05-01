@@ -33,7 +33,6 @@ body {
   margin-bottom: 15px;
 }
 
-/* UI 按鈕樣式：統一使用 #5698c3 */
 #subtitle-controls button {
   background: var(--main-color);
   color: white;
@@ -55,7 +54,6 @@ body {
   position: relative;
   width: 640px;
   margin: auto;
-  background: #000;
 }
 
 /* 影片容器 */
@@ -90,21 +88,37 @@ body {
   z-index: 10;
 }
 
-/* 底部列：僅剩全螢幕按鈕 */
+/* 退出全螢幕按鈕 (全螢幕時才顯示) */
+#exitFsBtn {
+  display: none; /* 平時隱藏 */
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  background: var(--main-color);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 20;
+}
+
+/* 底部列：全螢幕按鈕移至中央 */
 #bottom-bar {
   width: 640px;
   margin: auto;
   display: flex;
-  justify-content: flex-end; /* 按鈕靠右 */
+  justify-content: center; /* 置中 */
   align-items: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 #fullscreenBtn {
   background: var(--main-color);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
@@ -114,6 +128,11 @@ body {
 #fullscreenBtn:hover {
   filter: brightness(1.2);
 }
+
+/* 全螢幕狀態下的影片樣式調整 */
+#video-container:fullscreen #player { height: 100vh; }
+#video-container:fullscreen #subtitle { font-size: 4vh; bottom: 10vh; }
+#video-container:fullscreen #exitFsBtn { display: block; }
 </style>
 </head>
 
@@ -125,20 +144,23 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <div id="top-controls">
   <div id="subtitle-controls">
-    <button onclick="changeFontSize(2)">放大字幕</button>
-    <button onclick="changeFontSize(-2)">縮小字幕</button>
-    <button onclick="resetFontSize()">恢復大小</button>
+    <button onclick="changeFontSize(2)">放大</button>
+    <button onclick="changeFontSize(-2)">縮小</button>
+    <button onclick="resetFontSize()">復原</button>
   </div>
 </div>
 
 <div id="video-wrapper">
-  <div id="video-container" id="fs-target">
+  <!-- 全螢幕目標容器 -->
+  <div id="video-container">
     <div id="player"></div>
     <div id="subtitle">字幕載入中...</div>
+    <!-- 右下角的退出按鈕 -->
+    <button id="exitFsBtn" onclick="exitFullScreen()">退出全螢幕</button>
   </div>
 
   <div id="bottom-bar">
-    <button id="fullscreenBtn" onclick="toggleFullScreen()">進入全螢幕</button>
+    <button id="fullscreenBtn" onclick="enterFullScreen()">全螢幕</button>
   </div>
 </div>
 
@@ -148,7 +170,6 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 const videoId = "4_egYOdslfs";
 let player = null;
 
-/* YouTube Player 初始化 */
 function createPlayer(){
   if(!window.YT || !YT.Player){
     setTimeout(createPlayer,100);
@@ -158,12 +179,11 @@ function createPlayer(){
     height: "360",
     width: "640",
     videoId: videoId,
-    playerVars: { fs: 1, controls: 1, rel: 0 }
+    playerVars: { fs: 0, controls: 1, rel: 0, modestbranding: 1 }
   });
 }
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* 字幕數據（完整保留） */
 const subtitles = [
   { time: 25, text: "[SBS 登村洞公共禮堂]" },
   { time: 29, text: "勁爆 UP" },
@@ -174,7 +194,7 @@ const subtitles = [
   { time: 40, text: "SANGWON | 哇嗚" },
   { time: 41, text: "SANGWON | UP CONO" },
   { time: 42, text: "JUNSEO | UP CONO" },
-  { time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
+  { time: 43, text: "SANGWON | 你好，我們我們是卡拉OK的兼職生MC" },
   { time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
   { time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
   { time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
@@ -188,17 +208,12 @@ const subtitles = [
   { time: 110, text: "那個道具真的大大提升了氛圍？" }
 ];
 
-/* 更新字幕邏輯 */
 function updateSubtitle(){
   if(!player || !player.getCurrentTime || typeof player.getCurrentTime !== 'function') return;
-
   const t = player.getCurrentTime();
   let text = "";
-
   for(let i=0; i<subtitles.length; i++){
-    if(t >= subtitles[i].time){
-      text = subtitles[i].text;
-    }
+    if(t >= subtitles[i].time) text = subtitles[i].text;
   }
   const subEl = document.getElementById("subtitle");
   if(text === "") {
@@ -214,8 +229,6 @@ setInterval(updateSubtitle, 200);
 let currentFontSize = 18;
 function changeFontSize(delta) {
   currentFontSize += delta;
-  if(currentFontSize < 12) currentFontSize = 12;
-  if(currentFontSize > 40) currentFontSize = 40;
   document.getElementById("subtitle").style.fontSize = currentFontSize + "px";
 }
 function resetFontSize() {
@@ -223,33 +236,37 @@ function resetFontSize() {
   document.getElementById("subtitle").style.fontSize = "18px";
 }
 
-/* 全螢幕切換與退出 */
-function toggleFullScreen() {
+/* 全螢幕功能邏輯 */
+function enterFullScreen() {
   const elem = document.getElementById("video-container");
-  const btn = document.getElementById("fullscreenBtn");
-
-  if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
-    btn.innerText = "退出全螢幕";
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-    btn.innerText = "進入全螢幕";
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
   }
 }
 
-// 監聽全螢幕變化，若按 Esc 鍵退出也會自動更新按鈕文字
+function exitFullScreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+}
+
+// 監聽全螢幕狀態，調整字幕大小適應大螢幕
 document.addEventListener('fullscreenchange', () => {
-  const btn = document.getElementById("fullscreenBtn");
-  if (!document.fullscreenElement) {
-    btn.innerText = "進入全螢幕";
+  const subEl = document.getElementById("subtitle");
+  if (document.fullscreenElement) {
+    // 進入全螢幕時，字幕自動放大一點點
+    subEl.style.fontSize = (currentFontSize * 1.5) + "px";
   } else {
-    btn.innerText = "退出全螢幕";
+    // 退出後恢復原本大小
+    subEl.style.fontSize = currentFontSize + "px";
   }
 });
 </script>
