@@ -33,34 +33,36 @@ body {
   margin-bottom: 15px;
 }
 
-/* 修正：移除鎖死狀態，讓按鈕可以點擊 */
+/* UI 按鈕樣式：統一使用 #5698c3 */
 #subtitle-controls button {
-  background: #444;
+  background: var(--main-color);
   color: white;
-  border: 1px solid #666;
-  padding: 8px 12px;
+  border: none;
+  padding: 8px 16px;
   margin: 3px;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.3s;
+  font-weight: bold;
 }
 
 #subtitle-controls button:hover {
-  background: var(--main-color);
+  filter: brightness(1.2);
 }
 
 /* 影片外框 */
-#video-wrapper{
+#video-wrapper {
   position: relative;
   width: 640px;
   margin: auto;
   background: #000;
 }
 
-/* 影片 */
+/* 影片容器 */
 #video-container {
   position: relative;
   width: 100%;
+  background: black;
 }
 
 #player,
@@ -70,13 +72,13 @@ body {
   display: block;
 }
 
-/* 字幕內容 */
+/* 字幕樣式 */
 #subtitle {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px; /* 初始大小 */
+  font-size: 18px;
   font-family: "Arial Rounded MT Bold","微軟正黑體",sans-serif;
   color: white;
   background: rgba(0,0,0,0.7);
@@ -84,61 +86,33 @@ body {
   border-radius: 8px;
   white-space: pre-line;
   max-width: 90%;
-  pointer-events: none; /* 防止字幕擋住滑鼠點擊影片 */
+  pointer-events: none;
   z-index: 10;
 }
 
-/* 底部列 */
-#bottom-bar{
+/* 底部列：僅剩全螢幕按鈕 */
+#bottom-bar {
   width: 640px;
   margin: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* 按鈕靠右 */
   align-items: center;
   margin-top: 10px;
 }
 
-/* 左側 */
-#video-overlay{
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  font-size: 14px;
-}
-
-/* ❤️ */
-#likeBtn{
-  background:none;
-  border:none;
-  font-size:18px;
-  cursor:pointer;
-  color: var(--main-color);
-}
-
-#likeCount{
-  color: var(--main-color);
-}
-
-/* 📊 */
-#view-section{
-  display:flex;
-  gap:4px;
-  align-items:center;
-  color: var(--main-color);
-}
-
-/* 全螢幕按鈕 */
 #fullscreenBtn {
   background: var(--main-color);
   color: white;
   border: none;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 #fullscreenBtn:hover {
-  background: #4a82a8;
+  filter: brightness(1.2);
 }
 </style>
 </head>
@@ -151,29 +125,20 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <div id="top-controls">
   <div id="subtitle-controls">
-    <button onclick="changeFontSize(2)">放大</button>
-    <button onclick="changeFontSize(-2)">縮小</button>
-    <button onclick="resetFontSize()">復原</button>
+    <button onclick="changeFontSize(2)">放大字幕</button>
+    <button onclick="changeFontSize(-2)">縮小字幕</button>
+    <button onclick="resetFontSize()">恢復大小</button>
   </div>
 </div>
 
-<div id="video-wrapper" id="main-scope">
+<div id="video-wrapper">
   <div id="video-container" id="fs-target">
     <div id="player"></div>
     <div id="subtitle">字幕載入中...</div>
   </div>
 
   <div id="bottom-bar">
-    <div id="video-overlay">
-      <div>
-        <button id="likeBtn">🤍</button>
-        <span id="likeCount">0</span>
-      </div>
-      <div id="view-section">
-        📊 <span id="viewCount">0</span>
-      </div>
-    </div>
-    <button id="fullscreenBtn" onclick="toggleFullScreen()">全螢幕</button>
+    <button id="fullscreenBtn" onclick="toggleFullScreen()">進入全螢幕</button>
   </div>
 </div>
 
@@ -189,11 +154,11 @@ function createPlayer(){
     setTimeout(createPlayer,100);
     return;
   }
-  player = new YT.Player("player",{
-    height:"360",
-    width:"640",
-    videoId:videoId,
-    playerVars:{fs:1, controls:1, rel:0}
+  player = new YT.Player("player", {
+    height: "360",
+    width: "640",
+    videoId: videoId,
+    playerVars: { fs: 1, controls: 1, rel: 0 }
   });
 }
 window.onYouTubeIframeAPIReady = createPlayer;
@@ -245,12 +210,12 @@ function updateSubtitle(){
 }
 setInterval(updateSubtitle, 200);
 
-/* --- 功能新增：字幕縮放 --- */
+/* 字幕縮放 */
 let currentFontSize = 18;
 function changeFontSize(delta) {
   currentFontSize += delta;
-  if(currentFontSize < 12) currentFontSize = 12; // 最小限制
-  if(currentFontSize > 40) currentFontSize = 40; // 最大限制
+  if(currentFontSize < 12) currentFontSize = 12;
+  if(currentFontSize > 40) currentFontSize = 40;
   document.getElementById("subtitle").style.fontSize = currentFontSize + "px";
 }
 function resetFontSize() {
@@ -258,42 +223,35 @@ function resetFontSize() {
   document.getElementById("subtitle").style.fontSize = "18px";
 }
 
-/* --- 功能新增：全螢幕控制 --- */
+/* 全螢幕切換與退出 */
 function toggleFullScreen() {
   const elem = document.getElementById("video-container");
+  const btn = document.getElementById("fullscreenBtn");
+
   if (!document.fullscreenElement) {
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
+    } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
-      elem.msRequestFullscreen();
     }
+    btn.innerText = "退出全螢幕";
   } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     }
+    btn.innerText = "進入全螢幕";
   }
 }
 
-/* ❤️ 按讚功能 */
-let likeCount = parseInt(localStorage.getItem("likeCount")||"0");
-document.getElementById("likeBtn").onclick = () => {
-  likeCount++;
-  localStorage.setItem("likeCount",likeCount);
-  document.getElementById("likeCount").innerText = likeCount;
-};
-document.getElementById("likeCount").innerText = likeCount;
-
-/* 📊 瀏覽次數 */
-let viewCount = parseInt(localStorage.getItem("viewCount")||"0");
-if(!localStorage.getItem("viewed")){
-  viewCount++;
-  localStorage.setItem("viewCount",viewCount);
-  localStorage.setItem("viewed","true");
-}
-document.getElementById("viewCount").innerText = viewCount;
-
+// 監聽全螢幕變化，若按 Esc 鍵退出也會自動更新按鈕文字
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById("fullscreenBtn");
+  if (!document.fullscreenElement) {
+    btn.innerText = "進入全螢幕";
+  } else {
+    btn.innerText = "退出全螢幕";
+  }
+});
 </script>
 
 </body>
