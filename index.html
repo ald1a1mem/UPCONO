@@ -34,7 +34,7 @@ body {
   margin-bottom: 15px;
 }
 
-/* ❌ 全部鎖死 */
+/* 鎖死按鈕 */
 #subtitle-controls button {
   background: #555;
   color: #999;
@@ -44,6 +44,7 @@ body {
   border-radius: 6px;
   cursor: not-allowed;
   opacity: 0.4;
+  pointer-events: none;
 }
 
 /* 影片外框 */
@@ -65,7 +66,7 @@ body {
   height: 360px;
 }
 
-/* 字幕（完全不動） */
+/* 字幕 */
 #subtitle {
   position: absolute;
   bottom: 20px;
@@ -81,16 +82,17 @@ body {
   max-width: 90%;
 }
 
-/* ❤️ + 📊（移到全螢幕左邊，同一排） */
+/* 底部列 */
 #bottom-bar{
   width: 640px;
   margin: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 10px;
 }
 
-/* 左側：like + view */
+/* 左側 */
 #video-overlay{
   display: flex;
   gap: 12px;
@@ -119,7 +121,7 @@ body {
   color: var(--main-color);
 }
 
-/* 右側全螢幕 */
+/* 全螢幕 */
 #fullscreenBtn {
   background: var(--main-color);
   color: white;
@@ -129,9 +131,9 @@ body {
   cursor: pointer;
 }
 
-/* 留白 */
-#spacer{
-  flex:1;
+/* 瀏覽器 icon */
+link[rel="icon"]{
+  display:block;
 }
 
 </style>
@@ -145,9 +147,9 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <div id="top-controls">
   <div id="subtitle-controls">
-    <button disabled>放大</button>
-    <button disabled>縮小</button>
-    <button disabled>復原</button>
+    <button>放大</button>
+    <button>縮小</button>
+    <button>復原</button>
   </div>
 </div>
 
@@ -155,14 +157,11 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
   <div id="video-container">
     <div id="player"></div>
-
     <div id="subtitle">字幕載入中...</div>
   </div>
 
-  <!-- ⭐ 底部控制列 -->
   <div id="bottom-bar">
 
-    <!-- 左 -->
     <div id="video-overlay">
       <div>
         <button id="likeBtn">🤍</button>
@@ -174,9 +173,6 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
       </div>
     </div>
 
-    <div id="spacer"></div>
-
-    <!-- 右 -->
     <button id="fullscreenBtn">全螢幕</button>
 
   </div>
@@ -206,7 +202,7 @@ function createPlayer(){
 }
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* ⭐ 字幕（完全保留） */
+/* 字幕（完全保留） */
 const subtitles = [
 { time: 25, text: "[SBS 登村洞公共禮堂]" },
 { time: 29, text: "勁爆 UP" },
@@ -222,6 +218,14 @@ JUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量`
 { time: 41, text: "SANGWON | UP CONO" },
 { time: 42, text: "JUNSEO | UP CONO" },
 { time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
+{ time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
+{ time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
+{ time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
+{
+  time: 52,
+  text: `[找到工作了]
+SANGWON | 入職！`
+},
 { time: 110, text: "那個道具真的大大提升了氛圍？" }
 ];
 
