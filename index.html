@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- 📱 手機優化 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🖼️ 網站 icon -->
 <link rel="icon" type="image/png" href="icon.png">
 
 <title>
@@ -23,24 +21,20 @@ body {
   margin: 0;
 }
 
-/* 🔥 主色 */
 :root {
   --main-color: #5698c3;
 }
 
-/* 標題 */
 #title {
   font-size: 26px;
   margin: 20px;
   font-weight: bold;
 }
 
-/* 🔥 上方區域 */
 #top-controls {
   margin-bottom: 15px;
 }
 
-/* 字幕控制 */
 #subtitle-controls button {
   background: var(--main-color);
   color: white;
@@ -51,124 +45,109 @@ body {
   border-radius: 6px;
 }
 
-/* ❤️ 點讚區 */
-#like-section {
-  margin-top: 10px;
-}
-
-#likeBtn {
-  background: none;
-  border: none;
-  font-size: 30px;
-  cursor: pointer;
-  color: #ff4d6d;
-}
-
-/* 影片 + 留言區 */
-#main-layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-/* 影片容器 */
 #video-container {
   position: relative;
   width: 640px;
+  margin: auto;
   transition: all 0.3s ease;
 }
 
-/* 全螢幕 */
 #video-container.fullscreen {
   width: 100vw;
   height: 100vh;
 }
 
-/* YT播放器 */
 #player,
 #player iframe {
   width: 100%;
   height: 360px;
 }
 
-/* 全螢幕填滿 */
 #video-container.fullscreen #player,
 #video-container.fullscreen iframe {
   width: 100vw !important;
   height: 100vh !important;
 }
 
-/* 字幕 */
 #subtitle {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 70%;
-  font-family:
-    "Arial Rounded MT Bold",
-    "微軟正黑體",
-    sans-serif;
-
+  font-family: "Arial Rounded MT Bold","微軟正黑體",sans-serif;
   color: white;
   background: rgba(0,0,0,0.7);
-
   padding: 6px 14px;
   border-radius: 8px;
-
   white-space: pre-line;
-
   max-width: 90%;
 }
 
-/* 全螢幕按鈕 */
 #fullscreenBtn {
   display: block;
   margin: 12px auto;
-
   background: var(--main-color);
   color: white;
-
   border: none;
   padding: 10px 18px;
-
   cursor: pointer;
   border-radius: 6px;
 }
 
-/* 退出全螢幕 */
 #exitFullscreenBtn {
   position: absolute;
   bottom: 10px;
   right: 10px;
-
   background: rgba(0,0,0,0.7);
   color: white;
-
   border: 1px solid white;
-
   padding: 6px 10px;
-
   cursor: pointer;
   display: none;
-
-  z-index: 10;
 }
 
-/* 留言區 */
+/* ❤️ + 📊 */
+#video-overlay{
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 20;
+  font-size: 14px;
+}
+
+#likeBtn{
+  background:none;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+  color: var(--main-color);
+}
+
+#likeCount{
+  color: var(--main-color);
+  font-size:14px;
+}
+
+#view-section{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  color: var(--main-color);
+  font-size:14px;
+}
+
+/* 留言 */
 #comment-section {
   width: 300px;
   background: #1b1b1b;
   border-radius: 10px;
   padding: 15px;
   text-align: left;
-}
-
-#comment-title {
-  font-size: 20px;
-  margin-bottom: 10px;
+  margin: 20px auto;
 }
 
 #comment-input {
@@ -195,44 +174,11 @@ body {
   padding: 10px;
   border-radius: 6px;
   margin-top: 10px;
-  word-break: break-word;
 }
 
-/* 📱 手機版 */
-@media (max-width: 900px) {
-
-  #main-layout {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #video-container {
-    width: 100%;
-    max-width: 640px;
-  }
-
-  #comment-section {
-    width: 90%;
-  }
-
-}
-
-@media (max-width: 600px) {
-
-  #title {
-    font-size: 18px;
-    margin: 10px;
-  }
-
-  #subtitle {
-    font-size: 120%;
-    bottom: 30px;
-  }
-
-  button {
-    font-size: 16px;
-  }
-
+@media (max-width: 900px){
+  #video-container{ width: 100%; }
+  #comment-section{ width: 90%; }
 }
 
 </style>
@@ -240,53 +186,36 @@ body {
 
 <body>
 
-<!-- 標題 -->
 <div id="title">
 UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開幕式玩到最嗨」
 </div>
 
-<!-- 🔥 控制區 -->
 <div id="top-controls">
-
   <div id="subtitle-controls">
     <button onclick="changeSubtitleSize(0.1)">放大</button>
     <button onclick="changeSubtitleSize(-0.1)">縮小</button>
     <button onclick="resetSubtitleSize()">復原</button>
   </div>
-
-  <!-- ❤️ 點讚 -->
-  <div id="like-section">
-    <button id="likeBtn">🤍</button>
-    <span id="likeCount">0</span>
-  </div>
-
 </div>
 
-<!-- 主區 -->
-<div id="main-layout">
+<div id="video-container">
 
-  <div id="video-container">
+  <div id="player"></div>
 
-    <div id="player"></div>
+  <div id="video-overlay">
+    <div id="like-section">
+      <button id="likeBtn">🤍</button>
+      <span id="likeCount">0</span>
+    </div>
 
-    <div id="subtitle">字幕載入中...</div>
-
-    <button id="exitFullscreenBtn">退出全螢幕</button>
-
+    <div id="view-section">
+      📊 <span id="viewCount">0</span>
+    </div>
   </div>
 
-  <!-- 留言 -->
-  <div id="comment-section">
+  <div id="subtitle">字幕載入中...</div>
 
-    <div id="comment-title">留言區</div>
-
-    <input id="comment-input" placeholder="輸入留言...">
-
-    <button id="comment-btn">發送留言</button>
-
-    <div id="comments"></div>
-
-  </div>
+  <button id="exitFullscreenBtn">退出全螢幕</button>
 
 </div>
 
@@ -296,131 +225,157 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <script>
 
-/* 🎬 YouTube */
 const videoId = "4_egYOdslfs";
 let player = null;
 let subtitleSize = 0.7;
 
-function createPlayer() {
-  if (!window.YT || !YT.Player) {
-    setTimeout(createPlayer, 100);
+function createPlayer(){
+  if(!window.YT || !YT.Player){
+    setTimeout(createPlayer,100);
     return;
   }
 
-  player = new YT.Player("player", {
-    height: "360",
-    width: "640",
-    videoId: videoId,
-    playerVars: { fs: 0, controls: 1 }
+  player = new YT.Player("player",{
+    height:"360",
+    width:"640",
+    videoId:videoId,
+    playerVars:{fs:0,controls:1}
   });
 }
 
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* 字幕 */
+/* 🔥 字幕（已移除 endTime） */
 const subtitles = [
-  { time: 25, endTime: 28, text: "[SBS 登村洞公共禮堂]" },
-  { time: 29, endTime: 30, text: "勁爆 UP" },
-  { time: 31, endTime: 32, text: "振奮 歡呼" },
-  { time: 32, endTime: 33, text: "能量 爆棚" },
-  {
-    time: 34,
-    endTime: 38,
-    text: `[能量爆棚的卡拉OK好去處！]
+
+{ time: 25, text: "[SBS 登村洞公共禮堂]" },
+{ time: 29, text: "勁爆 UP" },
+{ time: 31, text: "振奮 歡呼" },
+{ time: 32, text: "能量 爆棚" },
+{
+  time: 34,
+  text: `[能量爆棚的卡拉OK好去處！]
 JUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量`
-  }
+},
+{ time: 39, text: "JUNSEO | UP CONO" },
+{ time: 40, text: "SANGWON | 哇嗚" },
+{ time: 41, text: "SANGWON | UP CONO" },
+{ time: 42, text: "JUNSEO | UP CONO" },
+{ time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
+{ time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
+{ time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
+{ time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
+{time: 52,
+  text: `[找到工作了]
+SANGWON | 入職！` },
+{time: 53,
+  text: `[找到工作了]
+JUNSEO | 入職！非常恭喜你` },
+{ time: 55, text: "JUNSEO | 這是我們出道以來第一次獲得節目的固定MC" },
+{time: 57,
+  text: `[恭喜出道以來首次擔任固定MC]
+JUNSEO | 這是我們出道以來第一次獲得節目的固定MC` },
+{ time: 59, text: "JUNSEO | 真是莫大的榮幸" },
+{time: 62,
+  text: `[喜歡]
+JUNSEO | 我們會非常努力的` },
+{time: 63,
+  text: `[馬上開始MC入職儀式]
+JUNSEO | 給我們UP節奏！` },
+{time: 67,
+  text: `[兼職生JUNSEO的UPbit舞蹈]
+aespa - UP (KARINA SOLO)` },
+{ time: 83, text: "[離兼職生JUNSEO更近了]" },
+{ time: 84, text: "[那些華麗的舞步 讓鏡頭緩緩拉近]" },
+{ time: 86, text: "[嚇了一跳]" },
+{ time: 92, text: "[感受 JUNSEO 的 UP]" },
+{ time: 98, text: "[競爭模式]" },
+{ time: 99, text: "[嘖~]" },
+{ time: 101, text: "不錯？" },
 ];
 
-function updateSubtitle() {
-  if (!player || !player.getCurrentTime) return;
+function updateSubtitle(){
+  if(!player||!player.getCurrentTime)return;
 
   const t = player.getCurrentTime();
   let text = "";
 
-  for (let i = 0; i < subtitles.length; i++) {
-    if (t >= subtitles[i].time && t <= subtitles[i].endTime) {
+  for(let i=0;i<subtitles.length;i++){
+    if(t >= subtitles[i].time){
       text = subtitles[i].text;
     }
   }
 
   const el = document.getElementById("subtitle");
   el.innerText = text;
-  el.style.fontSize = (subtitleSize * 100) + "%";
+  el.style.fontSize = (subtitleSize*100)+"%";
 }
 
-setInterval(updateSubtitle, 200);
+setInterval(updateSubtitle,200);
 
-/* 字幕大小 */
-function changeSubtitleSize(a) {
-  subtitleSize = Math.min(2, Math.max(0.3, subtitleSize + a));
+function changeSubtitleSize(a){
+  subtitleSize = Math.min(2,Math.max(0.3,subtitleSize+a));
 }
-function resetSubtitleSize() {
+
+function resetSubtitleSize(){
   subtitleSize = 0.7;
 }
 
 /* 全螢幕 */
 const container = document.getElementById("video-container");
-const exitBtn = document.getElementById("exitFullscreenBtn");
 
-document.getElementById("fullscreenBtn").onclick = () => {
+document.getElementById("fullscreenBtn").onclick = () =>
   container.requestFullscreen();
-};
 
-exitBtn.onclick = () => document.exitFullscreen();
+document.getElementById("exitFullscreenBtn").onclick = () =>
+  document.exitFullscreen();
 
-document.addEventListener("fullscreenchange", () => {
-  const full = !!document.fullscreenElement;
-  container.classList.toggle("fullscreen", full);
-  exitBtn.style.display = full ? "block" : "none";
+document.addEventListener("fullscreenchange",()=>{
+  const f = !!document.fullscreenElement;
+  container.classList.toggle("fullscreen",f);
+  document.getElementById("exitFullscreenBtn").style.display =
+    f ? "block" : "none";
 });
 
-/* 留言 */
-const commentInput = document.getElementById("comment-input");
-const commentBtn = document.getElementById("comment-btn");
-const comments = document.getElementById("comments");
-
-commentBtn.onclick = addComment;
-
-function addComment() {
-  const text = commentInput.value.trim();
-  if (!text) return;
-
-  const div = document.createElement("div");
-  div.className = "comment";
-  div.innerText = text;
-
-  comments.prepend(div);
-  commentInput.value = "";
-}
-
-/* ❤️ 點讚系統 */
+/* ❤️ */
 let likeCount = localStorage.getItem("likeCount")
   ? parseInt(localStorage.getItem("likeCount"))
   : 0;
 
-let liked = localStorage.getItem("liked") === "true";
+let liked = localStorage.getItem("liked")==="true";
 
 const likeBtn = document.getElementById("likeBtn");
 const likeCountEl = document.getElementById("likeCount");
 
-function updateLikeUI() {
+function updateLike(){
   likeCountEl.innerText = likeCount;
   likeBtn.innerText = liked ? "❤️" : "🤍";
 }
-
-updateLikeUI();
+updateLike();
 
 likeBtn.onclick = () => {
   liked = !liked;
+  likeCount = liked ? likeCount+1 : Math.max(0,likeCount-1);
 
-  if (liked) likeCount++;
-  else likeCount = Math.max(0, likeCount - 1);
+  localStorage.setItem("likeCount",likeCount);
+  localStorage.setItem("liked",liked);
 
-  localStorage.setItem("likeCount", likeCount);
-  localStorage.setItem("liked", liked);
-
-  updateLikeUI();
+  updateLike();
 };
+
+/* 📊 觀看數 */
+let viewed = localStorage.getItem("viewed");
+let viewCount = localStorage.getItem("viewCount")
+  ? parseInt(localStorage.getItem("viewCount"))
+  : 0;
+
+if(!viewed){
+  viewCount++;
+  localStorage.setItem("viewCount",viewCount);
+  localStorage.setItem("viewed","true");
+}
+
+document.getElementById("viewCount").innerText = viewCount;
 
 </script>
 
