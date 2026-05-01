@@ -2,7 +2,6 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" type="image/png" href="icon.png">
@@ -35,17 +34,19 @@ body {
   margin-bottom: 15px;
 }
 
+/* ❌ 按鈕不可用 */
 #subtitle-controls button {
-  background: var(--main-color);
-  color: white;
+  background: #555;
+  color: #999;
   border: none;
   padding: 8px 12px;
   margin: 3px;
-  cursor: pointer;
   border-radius: 6px;
+  cursor: not-allowed;
+  opacity: 0.4;
 }
 
-/* ⭐ 影片包 */
+/* 影片外層 */
 #video-wrapper{
   position: relative;
   width: 640px;
@@ -58,24 +59,13 @@ body {
   width: 100%;
 }
 
-#video-container.fullscreen {
-  width: 100vw;
-  height: 100vh;
-}
-
 #player,
 #player iframe {
   width: 100%;
   height: 360px;
 }
 
-#video-container.fullscreen #player,
-#video-container.fullscreen iframe {
-  width: 100vw !important;
-  height: 100vh !important;
-}
-
-/* 字幕 */
+/* 字幕（完全不動） */
 #subtitle {
   position: absolute;
   bottom: 20px;
@@ -99,7 +89,6 @@ body {
   color: white;
   border: none;
   padding: 10px 18px;
-  cursor: pointer;
   border-radius: 6px;
 }
 
@@ -111,29 +100,26 @@ body {
   color: white;
   border: 1px solid white;
   padding: 6px 10px;
-  cursor: pointer;
   display: none;
 }
 
-/* ❤️ + 📊（影片外左下） */
+/* ❤️ + 📊（影片外左下角 + 對齊影片左邊） */
 #video-overlay{
   position: absolute;
   bottom: 10px;
-  left: 10px;
+  left: 0;
 
   display: flex;
   gap: 12px;
   align-items: center;
 
   font-size: 14px;
-  z-index: 20;
 }
 
 #likeBtn{
   background:none;
   border:none;
   font-size:18px;
-  cursor:pointer;
   color: var(--main-color);
 }
 
@@ -148,7 +134,7 @@ body {
   color: var(--main-color);
 }
 
-/* ❌ 已移除留言區 */
+/* ❌ 留言已刪除 */
 
 </style>
 </head>
@@ -161,9 +147,9 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <div id="top-controls">
   <div id="subtitle-controls">
-    <button onclick="changeSubtitleSize(0.1)">放大</button>
-    <button onclick="changeSubtitleSize(-0.1)">縮小</button>
-    <button onclick="resetSubtitleSize()">復原</button>
+    <button disabled>放大</button>
+    <button disabled>縮小</button>
+    <button disabled>復原</button>
   </div>
 </div>
 
@@ -179,7 +165,7 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
   </div>
 
-  <!-- ❤️ + 📊 -->
+  <!-- ❤️ + 📊 在影片外左下角 -->
   <div id="video-overlay">
 
     <div>
@@ -203,8 +189,8 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 const videoId = "4_egYOdslfs";
 let player = null;
-let subtitleSize = 0.7;
 
+/* YouTube */
 function createPlayer(){
   if(!window.YT || !YT.Player){
     setTimeout(createPlayer,100);
@@ -221,7 +207,7 @@ function createPlayer(){
 
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* 字幕（完全不動） */
+/* ⭐ 字幕（100%完全保留） */
 const subtitles = [
 { time: 25, text: "[SBS 登村洞公共禮堂]" },
 { time: 29, text: "勁爆 UP" },
@@ -266,7 +252,7 @@ aespa - UP (KARINA SOLO)` },
 { time: 104, text: `[也給我們看看兼職生 SANGWON]
 JUNSEO | 給我們看看  等等，那是什麼？ ` },
 { time: 107, text: `[沙沙聲]
-JUNSEO | 給我們看看  等等，那是什麼？ ` },
+JUNSEO | 給我們看看  等等，那是什麼？ ` }
 ];
 
 function updateSubtitle(){
@@ -285,29 +271,21 @@ function updateSubtitle(){
 }
 setInterval(updateSubtitle,200);
 
-/* ❤️（純點讚） */
+/* ❤️ */
 let likeCount = parseInt(localStorage.getItem("likeCount")||"0");
 
-const likeBtn = document.getElementById("likeBtn");
-const likeCountEl = document.getElementById("likeCount");
-
-function updateLike(){
-  likeCountEl.innerText = likeCount;
-}
-
-updateLike();
-
-likeBtn.onclick = () => {
+document.getElementById("likeBtn").onclick = () => {
   likeCount++;
   localStorage.setItem("likeCount",likeCount);
-  updateLike();
+  document.getElementById("likeCount").innerText = likeCount;
 };
 
-/* 📊 觀看數 */
-let viewed = localStorage.getItem("viewed");
+document.getElementById("likeCount").innerText = likeCount;
+
+/* 📊 */
 let viewCount = parseInt(localStorage.getItem("viewCount")||"0");
 
-if(!viewed){
+if(!localStorage.getItem("viewed")){
   viewCount++;
   localStorage.setItem("viewCount",viewCount);
   localStorage.setItem("viewed","true");
