@@ -11,7 +11,6 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 </title>
 
 <style>
-
 body {
   background: #111;
   color: white;
@@ -34,17 +33,20 @@ body {
   margin-bottom: 15px;
 }
 
-/* 鎖死按鈕 */
+/* 修正：移除鎖死狀態，讓按鈕可以點擊 */
 #subtitle-controls button {
-  background: #555;
-  color: #999;
-  border: none;
+  background: #444;
+  color: white;
+  border: 1px solid #666;
   padding: 8px 12px;
   margin: 3px;
   border-radius: 6px;
-  cursor: not-allowed;
-  opacity: 0.4;
-  pointer-events: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#subtitle-controls button:hover {
+  background: var(--main-color);
 }
 
 /* 影片外框 */
@@ -52,6 +54,7 @@ body {
   position: relative;
   width: 640px;
   margin: auto;
+  background: #000;
 }
 
 /* 影片 */
@@ -64,15 +67,16 @@ body {
 #player iframe {
   width: 100%;
   height: 360px;
+  display: block;
 }
 
-/* 字幕 */
+/* 字幕內容 */
 #subtitle {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 70%;
+  font-size: 18px; /* 初始大小 */
   font-family: "Arial Rounded MT Bold","微軟正黑體",sans-serif;
   color: white;
   background: rgba(0,0,0,0.7);
@@ -80,6 +84,8 @@ body {
   border-radius: 8px;
   white-space: pre-line;
   max-width: 90%;
+  pointer-events: none; /* 防止字幕擋住滑鼠點擊影片 */
+  z-index: 10;
 }
 
 /* 底部列 */
@@ -121,7 +127,7 @@ body {
   color: var(--main-color);
 }
 
-/* 全螢幕 */
+/* 全螢幕按鈕 */
 #fullscreenBtn {
   background: var(--main-color);
   color: white;
@@ -131,11 +137,9 @@ body {
   cursor: pointer;
 }
 
-/* 瀏覽器 icon */
-link[rel="icon"]{
-  display:block;
+#fullscreenBtn:hover {
+  background: #4a82a8;
 }
-
 </style>
 </head>
 
@@ -147,124 +151,147 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 
 <div id="top-controls">
   <div id="subtitle-controls">
-    <button>放大</button>
-    <button>縮小</button>
-    <button>復原</button>
+    <button onclick="changeFontSize(2)">放大</button>
+    <button onclick="changeFontSize(-2)">縮小</button>
+    <button onclick="resetFontSize()">復原</button>
   </div>
 </div>
 
-<div id="video-wrapper">
-
-  <div id="video-container">
+<div id="video-wrapper" id="main-scope">
+  <div id="video-container" id="fs-target">
     <div id="player"></div>
     <div id="subtitle">字幕載入中...</div>
   </div>
 
   <div id="bottom-bar">
-
     <div id="video-overlay">
       <div>
         <button id="likeBtn">🤍</button>
         <span id="likeCount">0</span>
       </div>
-
       <div id="view-section">
         📊 <span id="viewCount">0</span>
       </div>
     </div>
-
-    <button id="fullscreenBtn">全螢幕</button>
-
+    <button id="fullscreenBtn" onclick="toggleFullScreen()">全螢幕</button>
   </div>
-
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-
 const videoId = "4_egYOdslfs";
 let player = null;
 
-/* YouTube */
+/* YouTube Player 初始化 */
 function createPlayer(){
   if(!window.YT || !YT.Player){
     setTimeout(createPlayer,100);
     return;
   }
-
   player = new YT.Player("player",{
     height:"360",
     width:"640",
     videoId:videoId,
-    playerVars:{fs:0,controls:1}
+    playerVars:{fs:1, controls:1, rel:0}
   });
 }
 window.onYouTubeIframeAPIReady = createPlayer;
 
-/* 字幕（完全保留） */
+/* 字幕數據（完整保留） */
 const subtitles = [
-{ time: 25, text: "[SBS 登村洞公共禮堂]" },
-{ time: 29, text: "勁爆 UP" },
-{ time: 31, text: "振奮 歡呼" },
-{ time: 32, text: "能量 爆棚" },
-{
-  time: 34,
-  text: `[能量爆棚的卡拉OK好去處！]
-JUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量`
-},
-{ time: 39, text: "JUNSEO | UP CONO" },
-{ time: 40, text: "SANGWON | 哇嗚" },
-{ time: 41, text: "SANGWON | UP CONO" },
-{ time: 42, text: "JUNSEO | UP CONO" },
-{ time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
-{ time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
-{ time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
-{ time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
-{
-  time: 52,
-  text: `[找到工作了]
-SANGWON | 入職！`
-},
-{ time: 110, text: "那個道具真的大大提升了氛圍？" }
+  { time: 25, text: "[SBS 登村洞公共禮堂]" },
+  { time: 29, text: "勁爆 UP" },
+  { time: 31, text: "振奮 歡呼" },
+  { time: 32, text: "能量 爆棚" },
+  { time: 34, text: `[能量爆棚的卡拉OK好去處！]\nJUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量` },
+  { time: 39, text: "JUNSEO | UP CONO" },
+  { time: 40, text: "SANGWON | 哇嗚" },
+  { time: 41, text: "SANGWON | UP CONO" },
+  { time: 42, text: "JUNSEO | UP CONO" },
+  { time: 43, text: "SANGWON | 你好，我們是卡拉OK的兼職生MC" },
+  { time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
+  { time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
+  { time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
+  { time: 52, text: `[找到工作了]\nSANGWON | 入職！` },
+  { time: 53, text: "JUNSEO | 入職！非常恭喜你" },
+  { time: 55, text: "JUNSEO | 這是我們出道以來第一次獲得節目的固定MC" },
+  { time: 57, text: `[恭喜出道以來首次擔任固定MC]\nJUNSEO | 這是我們出道以來第一次獲得節目的固定MC` },
+  { time: 59, text: "真是莫大的榮幸" },
+  { time: 61, text: `[喜歡]\n我們會非常努力的` },
+  { time: 63, text: `[馬上開始MC入職儀式]\nJUNSEO | 給我們UP節奏！` },
+  { time: 110, text: "那個道具真的大大提升了氛圍？" }
 ];
 
+/* 更新字幕邏輯 */
 function updateSubtitle(){
-  if(!player||!player.getCurrentTime)return;
+  if(!player || !player.getCurrentTime || typeof player.getCurrentTime !== 'function') return;
 
   const t = player.getCurrentTime();
   let text = "";
 
-  for(let i=0;i<subtitles.length;i++){
+  for(let i=0; i<subtitles.length; i++){
     if(t >= subtitles[i].time){
       text = subtitles[i].text;
     }
   }
-
-  document.getElementById("subtitle").innerText = text;
+  const subEl = document.getElementById("subtitle");
+  if(text === "") {
+      subEl.style.display = "none";
+  } else {
+      subEl.style.display = "block";
+      subEl.innerText = text;
+  }
 }
-setInterval(updateSubtitle,200);
+setInterval(updateSubtitle, 200);
 
-/* ❤️ */
+/* --- 功能新增：字幕縮放 --- */
+let currentFontSize = 18;
+function changeFontSize(delta) {
+  currentFontSize += delta;
+  if(currentFontSize < 12) currentFontSize = 12; // 最小限制
+  if(currentFontSize > 40) currentFontSize = 40; // 最大限制
+  document.getElementById("subtitle").style.fontSize = currentFontSize + "px";
+}
+function resetFontSize() {
+  currentFontSize = 18;
+  document.getElementById("subtitle").style.fontSize = "18px";
+}
+
+/* --- 功能新增：全螢幕控制 --- */
+function toggleFullScreen() {
+  const elem = document.getElementById("video-container");
+  if (!document.fullscreenElement) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+      elem.msRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+/* ❤️ 按讚功能 */
 let likeCount = parseInt(localStorage.getItem("likeCount")||"0");
-
 document.getElementById("likeBtn").onclick = () => {
   likeCount++;
   localStorage.setItem("likeCount",likeCount);
   document.getElementById("likeCount").innerText = likeCount;
 };
-
 document.getElementById("likeCount").innerText = likeCount;
 
-/* 📊 */
+/* 📊 瀏覽次數 */
 let viewCount = parseInt(localStorage.getItem("viewCount")||"0");
-
 if(!localStorage.getItem("viewed")){
   viewCount++;
   localStorage.setItem("viewCount",viewCount);
   localStorage.setItem("viewed","true");
 }
-
 document.getElementById("viewCount").innerText = viewCount;
 
 </script>
