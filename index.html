@@ -3,143 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="icon" type="image/png" href="icon.png">
-
-<title>
-UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開幕式玩到最嗨」
-</title>
+<title>UP CONO 開張！&TEAM 🐺</title>
 
 <style>
-body {
-  background: #111;
-  color: white;
-  text-align: center;
-  font-family: sans-serif;
-  margin: 0;
-}
-
-:root {
-  --main-color: #5698c3;
-}
-
-#title {
-  font-size: 26px;
-  margin: 20px;
-  font-weight: bold;
-}
-
-#top-controls {
-  margin-bottom: 15px;
-}
-
-#subtitle-controls button {
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  margin: 3px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: bold;
-}
-
-#subtitle-controls button:hover {
-  filter: brightness(1.2);
-}
-
-/* 影片外框 */
-#video-wrapper {
-  position: relative;
-  width: 640px;
-  margin: auto;
-}
-
-/* 影片容器 */
-#video-container {
-  position: relative;
-  width: 100%;
-  background: black;
-}
-
-#player,
-#player iframe {
-  width: 100%;
-  height: 360px;
-  display: block;
-}
-
-/* 字幕樣式 */
-#subtitle {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  font-family: "Arial Rounded MT Bold","微軟正黑體",sans-serif;
-  color: white;
-  background: rgba(0,0,0,0.7);
-  padding: 6px 14px;
-  border-radius: 8px;
-  white-space: pre-line;
-  max-width: 90%;
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* 退出全螢幕按鈕 (全螢幕時才顯示) */
-#exitFsBtn {
-  display: none; /* 平時隱藏 */
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  z-index: 20;
-}
-
-/* 底部列：全螢幕按鈕移至中央 */
-#bottom-bar {
-  width: 640px;
-  margin: auto;
-  display: flex;
-  justify-content: center; /* 置中 */
-  align-items: center;
-  margin-top: 15px;
-}
-
-#fullscreenBtn {
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 10px 30px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-#fullscreenBtn:hover {
-  filter: brightness(1.2);
-}
-
-/* 全螢幕狀態下的影片樣式調整 */
-#video-container:fullscreen #player { height: 100vh; }
-#video-container:fullscreen #subtitle { font-size: 4vh; bottom: 10vh; }
+body { background: #111; color: white; text-align: center; font-family: sans-serif; margin: 0; overflow-x: hidden; }
+:root { --main-color: #5698c3; }
+#title { font-size: 26px; margin: 20px auto; font-weight: bold; line-height: 1.5; max-width: 95%; }
+#top-controls { margin-bottom: 15px; }
+#subtitle-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+#subtitle-controls button { background: var(--main-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+#subtitle-controls button:hover { filter: brightness(1.2); }
+#video-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; }
+#video-container { position: relative; width: min(95vw, 640px); aspect-ratio: 16 / 9; background: black; border-radius: 10px; overflow: hidden; }
+#player, #player iframe { width: 100%; height: 100%; display: block; }
+#subtitle { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; font-family: "Arial Rounded MT Bold", "微軟正黑體", sans-serif; color: white; background: rgba(0,0,0,0.7); padding: 8px 14px; border-radius: 8px; white-space: pre-line; max-width: 90%; width: fit-content; pointer-events: none; z-index: 10; line-height: 1.5; }
+#exitFsBtn { display: none; position: absolute; right: 20px; bottom: 20px; background: var(--main-color); color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; z-index: 20; }
+#bottom-bar { margin-top: 15px; margin-bottom: 25px; }
+#fullscreenBtn { background: var(--main-color); color: white; border: none; padding: 10px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+#fullscreenBtn:hover { filter: brightness(1.2); }
+#video-container:fullscreen { width: 100vw; height: 100vh; border-radius: 0; }
+#video-container:fullscreen #player, #video-container:fullscreen iframe { width: 100vw; height: 100vh; }
+#video-container:fullscreen #subtitle { font-size: 4vh; bottom: 8vh; }
 #video-container:fullscreen #exitFsBtn { display: block; }
+
+@media (max-width: 768px) {
+  #title { font-size: 18px; padding: 0 15px; margin-top: 18px; margin-bottom: 18px; }
+  #video-container { width: 100vw; border-radius: 0; }
+  #subtitle { font-size: 15px; bottom: 14px; max-width: 92%; padding: 6px 10px; }
+  #subtitle-controls button, #fullscreenBtn { font-size: 14px; padding: 8px 14px; }
+}
 </style>
 </head>
 
 <body>
 
 <div id="title">
-UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開幕式玩到最嗨」
+UP CONO 開張！邀請到的第一組客人是~ &TEAM 🐺：「決定要把開幕式玩到最嗨」
 </div>
 
 <div id="top-controls">
@@ -151,14 +51,11 @@ UP CONO 開張！邀請到的第一組客人是~ %TEAM 🐺：「決定要把開
 </div>
 
 <div id="video-wrapper">
-  <!-- 全螢幕目標容器 -->
   <div id="video-container">
     <div id="player"></div>
     <div id="subtitle">字幕載入中...</div>
-    <!-- 右下角的退出按鈕 -->
     <button id="exitFsBtn" onclick="exitFullScreen()">退出全螢幕</button>
   </div>
-
   <div id="bottom-bar">
     <button id="fullscreenBtn" onclick="enterFullScreen()">全螢幕</button>
   </div>
@@ -179,53 +76,128 @@ function createPlayer(){
     height: "360",
     width: "640",
     videoId: videoId,
-    playerVars: { fs: 0, controls: 1, rel: 0, modestbranding: 1 }
+    playerVars: {
+      fs: 0,
+      controls: 1,
+      rel: 0,
+      modestbranding: 1
+    }
   });
 }
+
 window.onYouTubeIframeAPIReady = createPlayer;
 
+/* 保持你原本的字幕清單，有 endTime 的才會自動消失 */
 const subtitles = [
-  { time: 25, text: "[SBS 登村洞公共禮堂]" },
+  { time: 25, endTime: 29, text: "[SBS 登村洞公共禮堂]" },
   { time: 29, text: "勁爆 UP" },
   { time: 31, text: "振奮 歡呼" },
-  { time: 32, text: "能量 爆棚" },
+  { time: 32, endTime: 34, text: "能量 爆棚" },
   { time: 34, text: `[能量爆棚的卡拉OK好去處！]\nJUNSEO | 這裡是UPbit Coin Karaoke，為你注入能量` },
   { time: 39, text: "JUNSEO | UP CONO" },
   { time: 40, text: "SANGWON | 哇嗚" },
   { time: 41, text: "SANGWON | UP CONO" },
   { time: 42, text: "JUNSEO | UP CONO" },
   { time: 43, text: "SANGWON | 你好，我們我們是卡拉OK的兼職生MC" },
-  { time: 45, text: "SANGWON | 我是 ALPHA DRIVE ONE 的 SANGWON" },
-  { time: 47, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
-  { time: 49, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
+  { time: 45, text: "SANGWON | 我我是 ALPHA DRIVE ONE 的 SANGWON" },
+  { time: 47, endTime: 48, text: "JUNSEO | 我是 ALPHA DRIVE ONE 的 JUNSEO" },
+  { time: 49, endTime: 52, text: "[帥氣的兼職生 SANGWON & JUNSEO，正式入職]" },
   { time: 52, text: `[找到工作了]\nSANGWON | 入職！` },
   { time: 53, text: "JUNSEO | 入職！非常恭喜你" },
   { time: 55, text: "JUNSEO | 這是我們出道以來第一次獲得節目的固定MC" },
   { time: 57, text: `[恭喜出道以來首次擔任固定MC]\nJUNSEO | 這是我們出道以來第一次獲得節目的固定MC` },
-  { time: 59, text: "真是莫大的榮幸" },
-  { time: 61, text: `[喜歡]\n我們會非常努力的` },
-  { time: 63, text: `[馬上開始MC入職儀式]\nJUNSEO | 給我們UP節奏！` },
-  { time: 110, text: "那個道具真的大大提升了氛圍？" }
+  { time: 59, endTime: 60, text: "真是莫大的榮幸" },
+  { time: 62, text: `[喜歡]\n我們會非常努力的` },
+  { time: 64, endTime: 66, text: `[馬上開始MC入職儀式]\nJUNSEO | 給我們UP節奏！` },
+  { time: 68, endTime: 71, text: `[兼職生JUNSEO的UPbit舞蹈]\naespa - UP (KARINA SOLO)` },
+  { time: 83, text: "[離兼職生JUNSEO更近了]" },
+  { time: 84, text: "[那些華麗的舞步 讓鏡頭緩緩拉近]" },
+  { time: 86, endTime: 87, text: "[嚇了一跳]" },
+  { time: 92, endTime: 96, text: "[感受 JUNSEO 的 UP]" },
+  { time: 98, text: "[競爭模式]" },
+  { time: 99, text: "SANGWON | 不錯？" },
+  { time: 103, endTime: 104, text: "JUNSEO | 是不是很棒？\nSANGWON | 是啊" },
+  { time: 104, text: `[也給我們看看兼職生 SANGWON]\nJUNSEO | 給我們看看  等等，那是什麼？` },
+  { time: 107, endTime: 109,  text: `[沙沙聲]\nJUNSEO | 給我們看看  等等，那是什麼？` },
+  { time: 110, text: "那個道具真的大大提升了氛圍？" },
+  { time: 112, endTime: 115,  text: `[他真的準備充分]\nSANGWON | 給我們UP節奏`  },
+  { time: 118, endTime: 120,  text: `[兼職生 SANGWON 的 UPbit舞蹈]\nTWICE - CHEER UP`  },
+  { time: 124, endTime: 126, text: "[如果 SANGWON 讓你振作起來，你不得不...]" },
+  { time: 127, text: `[跳]\n[來到 SANGWON 的身邊]`  },
+  { time: 129, text: "[被可愛磁鐵吸引，甚至都沒意識到]" },
+  { time: 130, text: "[你會更喜歡我嗎？]" },
+  { time: 132, text: "[撒嬌]" },
+  { time: 135, endTime: 137, text: "[若無其事的]" },
+  { time: 138, endTime: 140, text: "[不讓你知道我喜歡你的心意]" },
+  { time: 143, text: "[可愛爆棚，直到結束]" },
+  { time: 146, text: "[為這SSS級可愛入門鼓掌]" },
+  { time: 150, endTime: 152, text: "JUNSEO | 等等，你甚至帶了道具！" },
+  { time: 154, text: "JUNSEO | 那麼，今天 UP CONO 的第一位嘉賓是誰呢？" },	
+  { time: 159, text: "SANGWON | 我有個朋友叫EJ老闆" },
+  { time: 162, text: "JUNSEO | 老闆EJ要來這裡嗎？" },	
+  { time: 163, text: `[EJ的簡歷真棒  職業1：人歌小賣部的老闆]\nJUNSEO | 沒錯！` },
+  { time: 165, text: `[職業2：人氣歌謠MC]\nSANGWON：他也是人氣歌謠的MC` },
+  { time: 166, text: ` [而且他們的主要工作就是嚎叫]\nJUNSEO | 哇，他們一定很忙吧\nSANGWON | 超級忙！` },
+  { time: 169, text: "SANGWON | 我今天動用了關係" },
+  { time: 171, text: ` [抓到一頭狼 (?) 並把他們帶過來了]\nSANGWON | 是我搞定的\nJUNSEO | EJ老闆` },	
+  { time: 173, text: ` [狼群待命]\nSANGWON | 他說因為是我們的盛大開宴所以要帶著所有朋友一起來玩`  },
+  { time: 176, text: ` [EJ老闆的朋友也來了]\nJUNSEO | 等等，EJ老闆的朋友也來了？\nSANGWON | 是的` },
+  { time: 179, text: "JUNSEO | 讓我們請出我們的第一位嘉賓" },
+  { time: 182, text: "JUNSEO | &TEAM 成員，請上台！" },
+  { time: 184, endTime: 189, text: "[&TEAM 進入 UPCONO]" },
+  { time: 191, text: ` EJ | 這是 UPCONO 嗎！？\nJUNSEO | 是的` },
+  { time: 194, text: `[環顧四周]\nEJ | 這裡真的很華麗！` },
+  { time: 197, text: "JUNSEO | 歡迎我們的第一批客人，&TEAM" },
+  { time: 200, text: `[歡迎各位嘉賓和團隊成員]\nJUNSEO | 歡迎！\nSANGWON | 歡迎！` },
+  { time: 202, text: `JUNSEO | 請先進行團體問候\nEJ | 好的，我們會打招呼的` },
+  { time: 204, endTime: 208, text: `EJ：ONE,TWO\n&TEAM | WE LINK！大家好，我們是 &TEAM` },
+  { time: 219, text: "EJ | 我是EJ，人氣歌謠的MC和人歌小賣部的老闆" },
+  { time: 223, text: "也是兼職生 SANGWON 的朋友" },
+  { time: 227, text: `[哦～]\n[EJ拜訪朋友  驕傲地笑容]\nSANGWON | 真好` },
+  { time: 230, text: "HARUA | 你好，我是 &TEAM 的 HARUA，請多多關照" },
+  { time: 234, text: `[好可愛]\nJUNSEO | 很高興認識你` },
+  { time: 235, endTime: 240,text: "K | 好，我是 K，人氣歌謠，我愛你" },
+  { time: 241, endTime: 245,text: "MAKI | 大家好，我是 MAKI，&TEAM的忙內，請多多關照" },
+  { time: 247, endTime: 250,text: "NICHOLAS | 大家好，我是 NICHOLAS，EJ老闆的朋友" },
+  { time: 252, text: "EJ | 聽說 UPCONO開業了 " },
+  { time: 254, text: `[我們帶了開業驚喜禮物]\n所以我們也帶了禮物` },
+  { time: 256, text: "[禮物？] " },
+  { time: 257, text: `[卡拉OK必備：兔子鈴鼓]\nEJ | 這是兔子鈴鼓` },
+  { time: 260, text: `[看到超可愛的禮物，進入超級開心模式]\nSANGWON |  謝謝！ 兔.탬\nJUNSEO | 兔子鈴鼓` },
 ];
 
 function updateSubtitle(){
   if(!player || !player.getCurrentTime || typeof player.getCurrentTime !== 'function') return;
+
   const t = player.getCurrentTime();
   let text = "";
-  for(let i=0; i<subtitles.length; i++){
-    if(t >= subtitles[i].time) text = subtitles[i].text;
+
+  // 關鍵修改：從最後一項字幕往前找，找到第一個符合時間點的
+  for(let i = subtitles.length - 1; i >= 0; i--){
+    const sub = subtitles[i];
+    if(t >= sub.time){
+      // 如果這句有設定 endTime，且目前時間已經超過它了，就不顯示
+      if(sub.endTime && t >= sub.endTime) {
+        text = ""; 
+      } else {
+        text = sub.text;
+      }
+      break; // 只要找到目前時間點最接近的那一句，就跳出循環
+    }
   }
+
   const subEl = document.getElementById("subtitle");
   if(text === "") {
-      subEl.style.display = "none";
+    subEl.style.display = "none";
   } else {
-      subEl.style.display = "block";
-      subEl.innerText = text;
+    subEl.style.display = "block";
+    subEl.innerText = text;
   }
 }
+
 setInterval(updateSubtitle, 200);
 
-/* 字幕縮放 */
+/* 字幕大小 */
 let currentFontSize = 18;
 function changeFontSize(delta) {
   currentFontSize += delta;
@@ -236,36 +208,25 @@ function resetFontSize() {
   document.getElementById("subtitle").style.fontSize = "18px";
 }
 
-/* 全螢幕功能邏輯 */
+/* 全螢幕 */
 function enterFullScreen() {
   const elem = document.getElementById("video-container");
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    elem.msRequestFullscreen();
-  }
+  if (elem.requestFullscreen) { elem.requestFullscreen(); }
+  else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+  else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
 }
 
 function exitFullScreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen();
-  }
+  if (document.exitFullscreen) { document.exitFullscreen(); }
+  else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+  else if (document.msExitFullscreen) { document.msExitFullscreen(); }
 }
 
-// 監聽全螢幕狀態，調整字幕大小適應大螢幕
 document.addEventListener('fullscreenchange', () => {
   const subEl = document.getElementById("subtitle");
   if (document.fullscreenElement) {
-    // 進入全螢幕時，字幕自動放大一點點
     subEl.style.fontSize = (currentFontSize * 1.5) + "px";
   } else {
-    // 退出後恢復原本大小
     subEl.style.fontSize = currentFontSize + "px";
   }
 });
