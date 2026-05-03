@@ -17,7 +17,7 @@ body { background: #111; color: white; text-align: center; font-family: sans-ser
 #video-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; }
 #video-container { position: relative; width: min(95vw, 640px); aspect-ratio: 16 / 9; background: black; border-radius: 10px; overflow: hidden; }
 #player, #player iframe { width: 100%; height: 100%; display: block; }
-#subtitle { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; font-family: "Arial Rounded MT Bold", "微軟正黑體", sans-serif; color: white; background: rgba(0,0,0,0.7); padding: 8px 14px; border-radius: 8px; white-space: pre-line; max-width: 90%; width: fit-content; pointer-events: none; z-index: 10; line-height: 1.5; }
+#subtitle { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; font-family: "Arial Rounded MT Bold", "微軟正黑體", sans-serif; color: white; background: rgba(0,0,0,0.7); padding: 8px 14px; border-radius: 8px; white-space: pre-line; max-width: 90%; width: fit-content; pointer-events: none; z-index: 10; line-height: 1.5; display: none; }
 #exitFsBtn { display: none; position: absolute; right: 20px; bottom: 20px; background: var(--main-color); color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; z-index: 20; }
 #bottom-bar { margin-top: 15px; margin-bottom: 25px; }
 #fullscreenBtn { background: var(--main-color); color: white; border: none; padding: 10px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
@@ -61,33 +61,11 @@ UP CONO 開張！邀請到的第一組客人是~ &TEAM 🐺：「決定要把開
   </div>
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
+// 1. 先定義變數與字幕
 const videoId = "4_egYOdslfs";
 let player = null;
 
-function createPlayer(){
-  if(!window.YT || !YT.Player){
-    setTimeout(createPlayer,100);
-    return;
-  }
-  player = new YT.Player("player", {
-    height: "360",
-    width: "640",
-    videoId: videoId,
-    playerVars: {
-      fs: 0,
-      controls: 1,
-      rel: 0,
-      modestbranding: 1
-    }
-  });
-}
-
-window.onYouTubeIframeAPIReady = createPlayer;
-
-/* 保持你原本的字幕清單，有 endTime 的才會自動消失 */
 const subtitles = [
   { time: 25, endTime: 29, text: "[SBS 登村洞公共禮堂]" },
   { time: 29, text: "勁爆 UP" },
@@ -150,7 +128,7 @@ const subtitles = [
   { time: 197, text: "JUNSEO | 歡迎我們的第一批客人，&TEAM" },
   { time: 200, text: `[歡迎各位嘉賓和團隊成員]\nJUNSEO | 歡迎！\nSANGWON | 歡迎！` },
   { time: 202, text: `JUNSEO | 請先進行團體問候\nEJ | 好的，我們會打招呼的` },
-  { time: 204, endTime: 208, text: `EJ：ONE,TWO\n&TEAM | WE LINK！大家好，我們是 &TEAM` },
+  { time: 204, endTime: 208, text: `EJ：ONE,TWO\n&TEAM | WE LINK！大家好，我們為是 &TEAM` },
   { time: 219, text: "EJ | 我是EJ，人氣歌謠的MC和人歌小賣部的老闆" },
   { time: 223, text: "也是兼職生 SANGWON 的朋友" },
   { time: 227, text: `[哦～]\n[EJ拜訪朋友  驕傲地笑容]\nSANGWON | 真好` },
@@ -166,23 +144,60 @@ const subtitles = [
   { time: 260, text: `[看到超可愛的禮物，進入超級開心模式]\nSANGWON |  謝謝！ 兔.탬\nJUNSEO | 兔子鈴鼓` },
 ];
 
+// 2. 動態載入 YouTube IFrame API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 3. 當 API 準備好時執行
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("player", {
+    height: "360",
+    width: "640",
+    videoId: videoId,
+    playerVars: {
+      'autoplay': 0,
+      'controls': 1,
+      'rel': 0,
+      'modestbranding': 1,
+      'origin': window.location.origin // 解決 GitHub Pages 跨域問題
+    },
+    events: {
+      'onReady': onPlayerReady,
+      'onError': onPlayerError
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  // 播放器準備好後才開始監控字幕
+  setInterval(updateSubtitle, 200);
+}
+
+function onPlayerError(e) {
+  console.error("播放器出錯，代碼：" + e.data);
+  if(e.data === 150 || e.data === 101) {
+    alert("此影片可能限制在特定域名播放，請檢查 YouTube 設定。");
+  }
+}
+
+// 4. 字幕更新邏輯
 function updateSubtitle(){
   if(!player || !player.getCurrentTime || typeof player.getCurrentTime !== 'function') return;
 
   const t = player.getCurrentTime();
   let text = "";
 
-  // 關鍵修改：從最後一項字幕往前找，找到第一個符合時間點的
   for(let i = subtitles.length - 1; i >= 0; i--){
     const sub = subtitles[i];
     if(t >= sub.time){
-      // 如果這句有設定 endTime，且目前時間已經超過它了，就不顯示
       if(sub.endTime && t >= sub.endTime) {
         text = ""; 
       } else {
         text = sub.text;
       }
-      break; // 只要找到目前時間點最接近的那一句，就跳出循環
+      break; 
     }
   }
 
@@ -195,9 +210,7 @@ function updateSubtitle(){
   }
 }
 
-setInterval(updateSubtitle, 200);
-
-/* 字幕大小 */
+/* 字幕大小控制 */
 let currentFontSize = 18;
 function changeFontSize(delta) {
   currentFontSize += delta;
@@ -208,7 +221,7 @@ function resetFontSize() {
   document.getElementById("subtitle").style.fontSize = "18px";
 }
 
-/* 全螢幕 */
+/* 全螢幕功能 */
 function enterFullScreen() {
   const elem = document.getElementById("video-container");
   if (elem.requestFullscreen) { elem.requestFullscreen(); }
